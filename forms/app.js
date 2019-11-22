@@ -1,59 +1,56 @@
 
 
-class FruitsFormWithState extends React.Component {
-  state = {
-    fruits: []
-  }
-  render() {
-
-    return (<div className="container">
-      <h2>Fruits Inventory</h2>
-      <ul>{
-        this.state.fruits.map((fruit, index) => {
-          return (<li key={index}>
-            <p>{fruit.name} is {fruit.isGood? 'good': 'not good'}</p>
-          </li>)
-        })
-      }</ul>
-      <h2>Fruits Form</h2>
-      <form>
-        <div className="form-group">
-          <label>Fruit Name</label>
-          <input type="text" name="fruit-name"/>
-        </div>
-        <div className="form-group">
-          <label>Do we like it?</label>
-          <input type="checkbox" name="is-good"/>
-        </div>
-        <button type="submit">Add!</button>
-      </form>
-    </div>)
-  }
-}
-
 class MyNameFormWithState extends React.Component {
   state = {
     firstName: "",
-    lastName: ""
+    lastName: "",
+    people: []
   }
-  handleFirstName = (changeEvent) => {
-    console.log(changeEvent.target.value)
+  handleInputChange = (changeEvent) => {
+    console.log(changeEvent.target.value, changeEvent.target.name)
     this.setState({
-      firstName: changeEvent.target.value
+      [changeEvent.target.name]: changeEvent.target.value
+    })
+  }
+  handleFormSubmit = (submitEvent) => {
+    submitEvent.preventDefault();
+    const newPeople = [...this.state.people]
+    newPeople.push({
+      firstName: this.state.firstName,
+      lastName: this.state.lastName
+    })
+
+    this.setState({
+      people: newPeople,
+      firstName: "",
+      lastName: ""
     })
   }
   render() {
+    console.log(this.state.people, 'people?')
     return (<div className="container">
-      <div className="form-group">
-        <label>First Name</label>
-        <input type="text" name="first-name"
-          onChange={this.handleFirstName}
-          value={this.state.firstName}/>
-      </div>
-      <div className="form-group">
-        <label>Last Name</label>
-        <input type="text" name="last-name"/>
-      </div>
+      <ul>{this.state.people.map((person, index) => {
+        return (<li key={index}>
+          {person.firstName} {person.lastName}
+        </li>)
+      })}</ul>
+
+      <form onSubmit={this.handleFormSubmit}>
+        <div className="form-group">
+          <label>First Name</label>
+          <input type="text" name="firstName"
+            onChange={this.handleInputChange}
+            value={this.state.firstName}/>
+        </div>
+        <div className="form-group">
+          <label>Last Name</label>
+          <input type="text" name="lastName"
+            value={this.state.lastName}
+            onChange={this.handleInputChange}
+          />
+        </div>
+        <button type="submit">Save!</button>
+      </form>
       <h1>This is the state</h1>
       <pre><code>{JSON.stringify(this.state)}</code></pre>
     </div>)
